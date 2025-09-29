@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<title>حصر استئذانات الطلاب</title>
+<style>
+body { font-family: "Tahoma", sans-serif; margin: 0; padding: 0; background: #f9fafb; }
+header { display: flex; align-items: center; justify-content: flex-start; padding: 10px 20px; background: linear-gradient(to right, #0077b6, #0096c7); color: #fff; }
+header img { height: 70px; margin-left: 15px; }
+header h1 { font-size: 20px; }
+.container { padding: 20px; }
+.form-box { background: #fff; padding: 20px; border-radius: 12px; box-shadow: 0 3px 6px rgba(0,0,0,0.1); margin-bottom: 20px; }
+label { display: block; margin-bottom: 8px; font-weight: bold; }
+input, select, button { padding: 10px; margin-bottom: 15px; width: 100%; border: 1px solid #ddd; border-radius: 8px; }
+button { background: #0077b6; color: white; border: none; cursor: pointer; font-weight: bold; }
+button:hover { background: #023e8a; }
+table { width: 100%; border-collapse: collapse; margin-top: 15px; background: #fff; border-radius: 12px; overflow: hidden; box-shadow: 0 3px 6px rgba(0,0,0,0.1); }
+th, td { padding: 12px; text-align: center; border-bottom: 1px solid #eee; }
+th { background: #0096c7; color: white; }
+.actions { margin-top: 20px; display: flex; gap: 10px; }
+footer { text-align: center; padding: 15px; margin-top: 20px; background: #f1f1f1; font-weight: bold; color: #333; }
+@media print { header, .form-box, .actions, footer { display: none; } table { box-shadow: none; } }
+</style>
+</head>
+<body>
+
+<header>
+<img src="school-logo.png" alt="شعار المدرسة">
+<h1>حصر استئذانات الطلاب</h1>
+</header>
+
+<div class="container">
+  <div class="form-box">
+    <label>اسم الطالب:</label>
+    <input type="text" id="name">
+    <label>الصف:</label>
+    <input type="text" id="class">
+    <label>السبب:</label>
+    <input type="text" id="reason">
+    <button onclick="saveData()">💾 حفظ الاستئذان</button>
+  </div>
+
+  <table id="recordsTable">
+    <thead>
+      <tr>
+        <th>اسم الطالب</th>
+        <th>الصف</th>
+        <th>اليوم</th>
+        <th>التاريخ</th>
+        <th>الوقت</th>
+        <th>السبب</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <div class="actions">
+    <button onclick="printTable()">🖨️ طباعة القائمة</button>
+  </div>
+</div>
+
+<footer>
+جميع الحقوق محفوظة لـ قسم التقنية الرقمية
+</footer>
+
+<script>
+window.onload = function() { loadData(); };
+
+function getDayName(date) {
+  const days = ['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  return days[date.getDay()];
+}
+
+function formatDate(date) {
+  let day = date.getDate().toString().padStart(2,'0');
+  let month = (date.getMonth()+1).toString().padStart(2,'0');
+  let year = date.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
+function formatTime(date) {
+  let hours = date.getHours();
+  let minutes = date.getMinutes().toString().padStart(2,'0');
+  let ampm = hours >= 12 ? 'م' : 'ص';
+  hours = hours % 12;
+  hours = hours ? hours : 12;
+  return `${hours}:${minutes} ${ampm}`;
+}
+
+function saveData() {
+  const name = document.getElementById("name").value;
+  const studentClass = document.getElementById("class").value;
+  const reason = document.getElementById("reason").value;
+  if (name.trim() === "" || studentClass.trim() === "") {
+    alert("رجاءً أدخل اسم الطالب والصف");
+    return;
+  }
+  const now = new Date();
+  const record = {
+    name,
+    studentClass,
+    day: getDayName(now),
+    date: formatDate(now),
+    time: formatTime(now),
+    reason
+  };
+  let records = JSON.parse(localStorage.getItem("records")) || [];
+  records.push(record);
+  localStorage.setItem("records", JSON.stringify(records));
+  addRow(record);
+  document.getElementById("name").value = "";
+  document.getElementById("class").value = "";
+  document.getElementById("reason").value = "";
+}
+
+function addRow(record) {
+  const tableBody = document.querySelector("#recordsTable tbody");
+  const row = document.createElement("tr");
+  row.innerHTML = `
+    <td>${record.name}</td>
+    <td>${record.studentClass}</td>
+    <td>${record.day}</td>
+    <td>${record.date}</td>
+    <td>${record.time}</td>
+    <td>${record.reason}</td>
+  `;
+  tableBody.appendChild(row);
+}
+
+function loadData() {
+  const records = JSON.parse(localStorage.getItem("records")) || [];
+  records.forEach(r => addRow(r));
+}
+
+function printTable() { window.print(); }
+</script>
+
+</body>
+</html>
