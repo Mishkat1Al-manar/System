@@ -24,14 +24,12 @@ footer { text-align: center; padding: 15px; margin-top: 20px; background: #f1f1f
 </head>
 <body>
 
-<!-- الهيدر مع شعار المدرسة -->
 <header>
 <img src="school-logo.png" alt="شعار المدرسة">
 <h1>حصر استئذانات الطلاب</h1>
 </header>
 
 <div class="container">
-  <!-- نموذج إدخال الاستئذان -->
   <div class="form-box">
     <label>اسم الطالب:</label>
     <input type="text" id="name">
@@ -42,20 +40,18 @@ footer { text-align: center; padding: 15px; margin-top: 20px; background: #f1f1f
     <button onclick="saveData()">💾 حفظ الاستئذان</button>
   </div>
 
-  <!-- جدول الاستئذانات -->
   <table id="recordsTable">
     <thead>
       <tr>
         <th>اسم الطالب</th>
         <th>الصف</th>
         <th>السبب</th>
-        <th>الوقت</th>
+        <th>التاريخ والوقت</th>
       </tr>
     </thead>
     <tbody></tbody>
   </table>
 
-  <!-- أزرار التحكم -->
   <div class="actions">
     <button onclick="printTable()">🖨️ طباعة القائمة</button>
     <button onclick="clearData()">🗑️ مسح السجلات</button>
@@ -67,19 +63,18 @@ footer { text-align: center; padding: 15px; margin-top: 20px; background: #f1f1f
 </footer>
 
 <script>
-// تحميل البيانات من التخزين
 window.onload = function() { loadData(); };
 
 function saveData() {
   const name = document.getElementById("name").value;
   const studentClass = document.getElementById("class").value;
   const reason = document.getElementById("reason").value;
-  const time = new Date().toLocaleTimeString();
+  const dateTime = new Date().toLocaleString(); // التاريخ والوقت كامل
   if (name.trim() === "" || studentClass.trim() === "") {
     alert("رجاءً أدخل اسم الطالب والصف");
     return;
   }
-  const record = { name, studentClass, reason, time };
+  const record = { name, studentClass, reason, dateTime };
   let records = JSON.parse(localStorage.getItem("records")) || [];
   records.push(record);
   localStorage.setItem("records", JSON.stringify(records));
@@ -96,7 +91,7 @@ function addRow(record) {
     <td>${record.name}</td>
     <td>${record.studentClass}</td>
     <td>${record.reason}</td>
-    <td>${record.time}</td>
+    <td>${record.dateTime}</td>
   `;
   tableBody.appendChild(row);
 }
