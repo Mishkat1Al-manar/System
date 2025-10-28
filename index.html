@@ -47,6 +47,27 @@ header p { font-size:1.2em; opacity:0.9; }
 .level-card p { color:#555; font-size:1.1em; margin:10px 0; }
 .level-badge { display:inline-block; background: linear-gradient(135deg, #0674ce 0%, #0a07be 100%); color:white; padding:8px 20px; border-radius:20px; font-weight:bold; margin-top:10px; }
 @media (max-width:768px) { header h1 { font-size:2em; } .words-grid { grid-template-columns:1fr; } .levels-container { grid-template-columns:1fr; } }
+/* ✅ تعديل استجابة الموقع للجوال */
+body {
+  overflow-x: hidden;
+}
+
+@media (max-width: 768px) {
+  header h1 { font-size: 2em; }
+  .words-grid { grid-template-columns: 1fr !important; }
+  .levels-container { grid-template-columns: 1fr !important; }
+  .word-card { padding: 20px; }
+  .word-english { font-size: 1.5em; }
+  .search-box input { font-size: 1em; padding: 12px 45px 12px 15px; }
+}
+
+@media (max-width: 480px) {
+  header h1 { font-size: 1.6em; }
+  .btn { font-size: 0.9em; padding: 12px 25px; }
+  .level-card { padding: 25px; }
+  .word-english { font-size: 1.3em; }
+  .word-example { font-size: 0.85em; }
+}
 </style>
 </head>
 <body>
@@ -313,3 +334,4 @@ showHome();
 </script>
 </body>
 </html>
+
