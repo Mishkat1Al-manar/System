@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قاموس اللغة الإنجليزية التفاعلي - 300 كلمة</title>
+<style>
+/* ----------- CSS ------------ */
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #30a7c5 100%); min-height:100vh; padding:20px; }
+.container { max-width:1400px; margin:0 auto; }
+header { text-align:center; color:white; margin-bottom:40px; animation:fadeInDown 1s ease; }
+header h1 { font-size:3em; margin-bottom:10px; text-shadow:2px 2px 4px rgba(0,0,0,0.3); }
+header p { font-size:1.2em; opacity:0.9; }
+.level-indicator { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding:15px 30px; border-radius:50px; display:inline-block; margin-bottom:30px; color:white; font-size:1.3em; font-weight:bold; box-shadow:0 8px 32px rgba(0,0,0,0.1); }
+.search-box { max-width:500px; margin:20px auto; position:relative; }
+.search-box input { width:100%; padding:15px 50px 15px 20px; border:none; border-radius:50px; font-size:1.1em; box-shadow:0 5px 20px rgba(0,0,0,0.2); }
+.search-box button { position:absolute; left:5px; top:5px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border:none; padding:10px 20px; border-radius:50px; color:white; cursor:pointer; font-weight:bold; }
+.words-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(320px,1fr)); gap:25px; margin-bottom:40px; animation:fadeInUp 1s ease; }
+.word-card { background:white; border-radius:20px; padding:25px; box-shadow:0 10px 30px rgba(0,0,0,0.2); transition:transform 0.3s ease, box-shadow 0.3s ease; cursor:pointer; position:relative; overflow:hidden; }
+.word-card::before { content:''; position:absolute; top:0; right:0; width:5px; height:100%; background: linear-gradient(180deg, #667eea 0%, #764ba2 100%); }
+.word-card:hover { transform: translateY(-10px); box-shadow: 0 15px 40px rgba(0,0,0,0.3); }
+.word-number { position:absolute; top:10px; left:10px; background: linear-gradient(135deg, #667eea 0%, #2361b1 100%); color:white; width:35px; height:35px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-weight:bold; font-size:0.9em; }
+.word-english { font-size:1.8em; color:#667eea; font-weight:bold; margin-bottom:10px; margin-top:10px; }
+.word-arabic { font-size:1.3em; color:#333; margin-bottom:10px; }
+.word-pronunciation { color:#888; font-style:italic; margin-bottom:10px; }
+.word-type { display:inline-block; background:#f0f0f0; padding:5px 15px; border-radius:20px; font-size:0.85em; color:#666; margin-bottom:10px; }
+.word-example { background:#f8f9fa; padding:10px; border-radius:10px; margin-top:10px; font-size:0.9em; color:#555; border-right:4px solid #667eea; }
+.navigation { display:flex; justify-content:center; gap:20px; flex-wrap:wrap; margin-top:40px; position:sticky; bottom:20px; background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding:20px; border-radius:20px; }
+.btn { padding:15px 40px; font-size:1.1em; border:none; border-radius:50px; cursor:pointer; transition:all 0.3s ease; font-weight:bold; text-decoration:none; display:inline-block; box-shadow:0 5px 15px rgba(0,0,0,0.2); }
+.btn-home { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color:white; }
+.btn-next { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color:white; }
+.btn-prev { background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color:white; }
+.btn:hover { transform:scale(1.05); box-shadow:0 8px 25px rgba(0,0,0,0.3); }
+@keyframes fadeInDown { from { opacity:0; transform:translateY(-30px); } to { opacity:1; transform:translateY(0); } }
+@keyframes fadeInUp { from { opacity:0; transform:translateY(30px); } to { opacity:1; transform:translateY(0); } }
+.home-page { text-align:center; color:white; }
+.stats-container { display:flex; justify-content:center; gap:30px; margin:30px 0; flex-wrap:wrap; }
+.stat-card { background: rgba(255,255,255,0.2); backdrop-filter: blur(10px); padding:20px 40px; border-radius:20px; color:white; }
+.stat-number { font-size:3em; font-weight:bold; display:block; }
+.stat-label { font-size:1.1em; opacity:0.9; }
+.levels-container { display:grid; grid-template-columns:repeat(auto-fit, minmax(280px,1fr)); gap:30px; margin-top:50px; }
+.level-card { background: rgba(255,255,255,0.95); border-radius:20px; padding:40px; cursor:pointer; transition:all 0.3s ease; box-shadow:0 10px 30px rgba(0,0,0,0.2); position:relative; overflow:hidden; }
+.level-card::before { content:''; position:absolute; top:0; right:0; width:100%; height:5px; background: linear-gradient(90deg, #125bb9 0%, #764ba2 100%); }
+.level-card:hover { transform: translateY(-15px) scale(1.05); box-shadow:0 20px 50px rgba(0,0,0,0.3); }
+.level-card h2 { color:#667eea; font-size:2em; margin-bottom:15px; }
+.level-card p { color:#555; font-size:1.1em; margin:10px 0; }
+.level-badge { display:inline-block; background: linear-gradient(135deg, #0674ce 0%, #0a07be 100%); color:white; padding:8px 20px; border-radius:20px; font-weight:bold; margin-top:10px; }
+@media (max-width:768px) { header h1 { font-size:2em; } .words-grid { grid-template-columns:1fr; } .levels-container { grid-template-columns:1fr; } }
+</style>
+</head>
+<body>
+<div class="container" id="app">
+
+<!-- الصفحة الرئيسية -->
+<div id="homePage" class="home-page">
+<header>
+<h1>📚 قاموس اللغة الإنجليزية التفاعلي</h1>
+<p>تعلم 150 كلمة إنجليزية مقسمة إلى 6 مستويات</p>
+</header>
+
+<div class="stats-container">
+<div class="stat-card"><span class="stat-number">150</span><span class="stat-label">كلمة</span></div>
+<div class="stat-card"><span class="stat-number">6</span><span class="stat-label">مستويات</span></div>
+<div class="stat-card"><span class="stat-number">25</span><span class="stat-label">كلمة/مستوى</span></div>
+</div>
+
+<div class="levels-container">
+<div class="level-card" onclick="showLevel(1)"><h2>🌱 المستوى الأول</h2><p>كلمات أساسية للمبتدئين</p><span class="level-badge">25 كلمة</span></div>
+<div class="level-card" onclick="showLevel(2)"><h2>🌿 المستوى الثاني</h2><p>كلمات متوسطة</p><span class="level-badge">25 كلمة</span></div>
+<div class="level-card" onclick="showLevel(3)"><h2>🌳 المستوى الثالث</h2><p>كلمات متقدمة</p><span class="level-badge">25 كلمة</span></div>
+<div class="level-card" onclick="showLevel(4)"><h2>🎓 المستوى الرابع</h2><p>كلمات أكاديمية</p><span class="level-badge">25 كلمة</span></div>
+<div class="level-card" onclick="showLevel(5)"><h2>💼 المستوى الخامس</h2><p>كلمات احترافية</p><span class="level-badge">25 كلمة</span></div>
+<div class="level-card" onclick="showLevel(6)"><h2>👑 المستوى السادس</h2><p>كلمات متقدمة جداً</p><span class="level-badge">25 كلمة</span></div>
+</div>
+</div>
+
+<!-- صفحة المستوى -->
+<div id="levelPages" style="display:none;">
+<header>
+<h1>📘 قاموس اللغة الإنجليزية</h1>
+<div class="level-indicator" id="levelIndicator"></div>
+</header>
+
+<div class="search-box">
+<input type="text" id="searchInput" placeholder="🔍 ابحث عن كلمة..." onkeyup="searchWords()">
+<button onclick="clearSearch()">مسح</button>
+</div>
+
+<div class="words-grid" id="wordsContainer"></div>
+
+<div class="navigation">
+<button class="btn btn-home" onclick="showHome()">🏠 الصفحة الرئيسية</button>
+<button class="btn btn-prev" id="prevBtn" onclick="previousLevel()">⏮️ المستوى السابق</button>
+<button class="btn btn-next" id="nextBtn" onclick="nextLevel()">المستوى التالي ⏭️</button>
+</div>
+</div>
+
+</div>
+
+<script>
+/* ----------- JS ------------ */
+const dictionary = {
+1: [
+{english:"Hello", arabic:"مرحباً",pronunciation:"/həˈloʊ/",type:"تحية",example:"Hello, how are you?"},
+{english:"Goodbye", arabic:"وداعاً",pronunciation:"/ɡʊdˈbaɪ/",type:"تحية",example:"Goodbye, see you soon!"},
+{english:"Please", arabic:"من فضلك",pronunciation:"/pliːz/",type:"تعبير",example:"Please help me."},
+{english:"Thank you", arabic:"شكراً",pronunciation:"/ˈθæŋk juː/",type:"تعبير",example:"Thank you very much."},
+{english:"Sorry", arabic:"آسف",pronunciation:"/ˈsɒri/",type:"اعتذار",example:"I'm sorry for being late."},
+{english:"Yes", arabic:"نعم",pronunciation:"/jes/",type:"جواب",example:"Yes, of course."},
+{english:"No", arabic:"لا",pronunciation:"/noʊ/",type:"جواب",example:"No, thank you."},
+{english:"Good", arabic:"جيد",pronunciation:"/ɡʊd/",type:"صفة",example:"This is a good idea."},
+{english:"Bad", arabic:"سيء",pronunciation:"/bæd/",type:"صفة",example:"That’s a bad habit."},
+{english:"Friend", arabic:"صديق",pronunciation:"/frend/",type:"اسم",example:"He is my best friend."},
+{english:"Family", arabic:"عائلة",pronunciation:"/ˈfæməli/",type:"اسم",example:"I love my family."},
+{english:"Eat", arabic:"يأكل",pronunciation:"/iːt/",type:"فعل",example:"I eat breakfast at 8."},
+{english:"Drink", arabic:"يشرب",pronunciation:"/drɪŋk/",type:"فعل",example:"Drink more water."},
+{english:"Sleep", arabic:"ينام",pronunciation:"/sliːp/",type:"فعل",example:"I sleep at 10 PM."},
+{english:"Walk", arabic:"يمشي",pronunciation:"/wɔːk/",type:"فعل",example:"I walk to school."},
+{english:"Run", arabic:"يجري",pronunciation:"/rʌn/",type:"فعل",example:"He runs every morning."},
+{english:"Book", arabic:"كتاب",pronunciation:"/bʊk/",type:"اسم",example:"I read a book."},
+{english:"Pen", arabic:"قلم",pronunciation:"/pen/",type:"اسم",example:"I have a blue pen."},
+{english:"Table", arabic:"طاولة",pronunciation:"/ˈteɪbl/",type:"اسم",example:"The table is clean."},
+{english:"Chair", arabic:"كرسي",pronunciation:"/tʃer/",type:"اسم",example:"Sit on the chair."},
+{english:"School", arabic:"مدرسة",pronunciation:"/skuːl/",type:"اسم",example:"The school is big."},
+{english:"Teacher", arabic:"معلم",pronunciation:"/ˈtiːtʃər/",type:"اسم",example:"The teacher is kind."},
+{english:"Student", arabic:"طالب",pronunciation:"/ˈstuːdənt/",type:"اسم",example:"I am a student."},
+{english:"Car", arabic:"سيارة",pronunciation:"/kɑːr/",type:"اسم",example:"My car is red."},
+{english:"House", arabic:"منزل",pronunciation:"/haʊs/",type:"اسم",example:"This is my house."}
+],
+2: [
+{english:"Work", arabic:"عمل",pronunciation:"/wɜːrk/",type:"اسم",example:"I go to work every day."},
+{english:"Study", arabic:"دراسة",pronunciation:"/ˈstʌdi/",type:"اسم",example:"I study English at night."},
+{english:"Job", arabic:"وظيفة",pronunciation:"/dʒɒb/",type:"اسم",example:"He has a new job."},
+{english:"Office", arabic:"مكتب",pronunciation:"/ˈɒfɪs/",type:"اسم",example:"She works in an office."},
+{english:"Computer", arabic:"حاسوب",pronunciation:"/kəmˈpjuːtər/",type:"اسم",example:"I use a computer daily."},
+{english:"Email", arabic:"بريد إلكتروني",pronunciation:"/ˈiːmeɪl/",type:"اسم",example:"I sent an email."},
+{english:"Meeting", arabic:"اجتماع",pronunciation:"/ˈmiːtɪŋ/",type:"اسم",example:"We have a meeting today."},
+{english:"Boss", arabic:"مدير",pronunciation:"/bɒs/",type:"اسم",example:"My boss is nice."},
+{english:"Salary", arabic:"راتب",pronunciation:"/ˈsæləri/",type:"اسم",example:"I get my salary monthly."},
+{english:"Team", arabic:"فريق",pronunciation:"/tiːm/",type:"اسم",example:"We work as a team."},
+{english:"Project", arabic:"مشروع",pronunciation:"/ˈprɒdʒekt/",type:"اسم",example:"The project is finished."},
+{english:"Plan", arabic:"خطة",pronunciation:"/plæn/",type:"اسم",example:"Let's make a plan."},
+{english:"Goal", arabic:"هدف",pronunciation:"/ɡoʊl/",type:"اسم",example:"My goal is success."},
+{english:"Idea", arabic:"فكرة",pronunciation:"/aɪˈdiːə/",type:"اسم",example:"That’s a great idea."},
+{english:"Problem", arabic:"مشكلة",pronunciation:"/ˈprɒbləm/",type:"اسم",example:"We have a problem."},
+{english:"Solution", arabic:"حل",pronunciation:"/səˈluːʃn/",type:"اسم",example:"I found a solution."},
+{english:"Report", arabic:"تقرير",pronunciation:"/rɪˈpɔːrt/",type:"اسم",example:"I wrote the report."},
+{english:"Task", arabic:"مهمة",pronunciation:"/tæsk/",type:"اسم",example:"Complete the task."},
+{english:"Success", arabic:"نجاح",pronunciation:"/səkˈses/",type:"اسم",example:"Success takes time."},
+{english:"Meeting", arabic:"اجتماع",pronunciation:"/ˈmiːtɪŋ/",type:"اسم",example:"Attend the meeting at 9."},
+{english:"Call", arabic:"مكالمة",pronunciation:"/kɔːl/",type:"اسم",example:"I have a call."},
+{english:"Document", arabic:"وثيقة",pronunciation:"/ˈdɒkjʊmənt/",type:"اسم",example:"Read the document carefully."},
+{english:"Schedule", arabic:"جدول",pronunciation:"/ˈskedʒuːl/",type:"اسم",example:"Check the schedule."},
+{english:"Deadline", arabic:"الموعد النهائي",pronunciation:"/ˈdedlaɪn/",type:"اسم",example:"Meet the deadline."},
+{english:"Office", arabic:"مكتب",pronunciation:"/ˈɒfɪs/",type:"اسم",example:"My office is on the 3rd floor."}
+],
+3: [ {english:"Travel", arabic:"سفر",pronunciation:"/ˈtræv.əl/",type:"فعل",example:"I love to travel."},
+{english:"Airport", arabic:"مطار",pronunciation:"/ˈeəpɔːt/",type:"اسم",example:"The airport is busy."},
+{english:"Ticket", arabic:"تذكرة",pronunciation:"/ˈtɪkɪt/",type:"اسم",example:"I bought a ticket."},
+{english:"Hotel", arabic:"فندق",pronunciation:"/hoʊˈtel/",type:"اسم",example:"We stayed at a hotel."},
+{english:"Beach", arabic:"شاطئ",pronunciation:"/biːtʃ/",type:"اسم",example:"The beach is beautiful."},
+{english:"Bag", arabic:"حقيبة",pronunciation:"/bæɡ/",type:"اسم",example:"Pack your bag."},
+{english:"Passport", arabic:"جواز سفر",pronunciation:"/ˈpɑːspɔːt/",type:"اسم",example:"Don't forget your passport."},
+{english:"Map", arabic:"خريطة",pronunciation:"/mæp/",type:"اسم",example:"I need a map."},
+{english:"Journey", arabic:"رحلة",pronunciation:"/ˈdʒɜːrni/",type:"اسم",example:"It’s a long journey."},
+{english:"Flight", arabic:"رحلة جوية",pronunciation:"/flaɪt/",type:"اسم",example:"The flight was late."},
+{english:"Visit", arabic:"زيارة",pronunciation:"/ˈvɪzɪt/",type:"فعل",example:"I visit my family."},
+{english:"Adventure", arabic:"مغامرة",pronunciation:"/ədˈventʃər/",type:"اسم",example:"Life is an adventure."},
+{english:"Mountain", arabic:"جبل",pronunciation:"/ˈmaʊntən/",type:"اسم",example:"We climbed the mountain."},
+{english:"River", arabic:"نهر",pronunciation:"/ˈrɪvər/",type:"اسم",example:"The river is wide."},
+{english:"Island", arabic:"جزيرة",pronunciation:"/ˈaɪlənd/",type:"اسم",example:"They live on an island."},
+{english:"Guide", arabic:"مرشد",pronunciation:"/ɡaɪd/",type:"اسم",example:"Our guide was helpful."},
+{english:"Camera", arabic:"كاميرا",pronunciation:"/ˈkæmərə/",type:"اسم",example:"I took photos with my camera."},
+{english:"Museum", arabic:"متحف",pronunciation:"/mjuˈziːəm/",type:"اسم",example:"We went to a museum."},
+{english:"Souvenir", arabic:"تذكار",pronunciation:"/ˌsuːvəˈnɪər/",type:"اسم",example:"I bought a souvenir."},
+{english:"Train", arabic:"قطار",pronunciation:"/treɪn/",type:"اسم",example:"The train is arriving."},
+{english:"Bus", arabic:"حافلة",pronunciation:"/bʌs/",type:"اسم",example:"We took the bus."},
+{english:"Road", arabic:"طريق",pronunciation:"/roʊd/",type:"اسم",example:"The road is long."},
+{english:"City", arabic:"مدينة",pronunciation:"/ˈsɪti/",type:"اسم",example:"I live in a big city."},
+{english:"Country", arabic:"دولة",pronunciation:"/ˈkʌntri/",type:"اسم",example:"My country is beautiful."},
+{english:"Weather", arabic:"طقس",pronunciation:"/ˈweðər/",type:"اسم",example:"The weather is hot today."}
+]
+,4: [ {english:"Research", arabic:"بحث",pronunciation:"/rɪˈsɜːrtʃ/",type:"اسم",example:"The research is complete."},
+{english:"Experiment", arabic:"تجربة",pronunciation:"/ɪkˈsperɪmənt/",type:"اسم",example:"We did an experiment."},
+{english:"Data", arabic:"بيانات",pronunciation:"/ˈdeɪtə/",type:"اسم",example:"The data is accurate."},
+{english:"Analysis", arabic:"تحليل",pronunciation:"/əˈnæləsɪs/",type:"اسم",example:"The analysis was detailed."},
+{english:"Theory", arabic:"نظرية",pronunciation:"/ˈθɪəri/",type:"اسم",example:"It’s just a theory."},
+{english:"Result", arabic:"نتيجة",pronunciation:"/rɪˈzʌlt/",type:"اسم",example:"The result is clear."},
+{english:"Experiment", arabic:"تجربة",pronunciation:"/ɪkˈsperɪmənt/",type:"اسم",example:"The experiment worked."},
+{english:"Method", arabic:"طريقة",pronunciation:"/ˈmeθəd/",type:"اسم",example:"Use a simple method."},
+{english:"Subject", arabic:"موضوع",pronunciation:"/ˈsʌbdʒɪkt/",type:"اسم",example:"The subject is interesting."},
+{english:"Lecture", arabic:"محاضرة",pronunciation:"/ˈlektʃər/",type:"اسم",example:"The lecture starts at 9."},
+{english:"Professor", arabic:"أستاذ جامعي",pronunciation:"/prəˈfesər/",type:"اسم",example:"The professor is kind."},
+{english:"Student", arabic:"طالب",pronunciation:"/ˈstjuːdənt/",type:"اسم",example:"The student asked a question."},
+{english:"University", arabic:"جامعة",pronunciation:"/ˌjuːnɪˈvɜːsəti/",type:"اسم",example:"I study at a university."},
+{english:"Library", arabic:"مكتبة",pronunciation:"/ˈlaɪbrəri/",type:"اسم",example:"The library is big."},
+{english:"Knowledge", arabic:"معرفة",pronunciation:"/ˈnɒlɪdʒ/",type:"اسم",example:"Knowledge is power."},
+{english:"Education", arabic:"تعليم",pronunciation:"/ˌedjʊˈkeɪʃən/",type:"اسم",example:"Education is important."},
+{english:"Paper", arabic:"ورقة بحثية",pronunciation:"/ˈpeɪpər/",type:"اسم",example:"I wrote a research paper."},
+{english:"Presentation", arabic:"عرض تقديمي",pronunciation:"/ˌprezənˈteɪʃən/",type:"اسم",example:"I made a presentation."},
+{english:"Exam", arabic:"امتحان",pronunciation:"/ɪɡˈzæm/",type:"اسم",example:"The exam was hard."},
+{english:"Grade", arabic:"درجة",pronunciation:"/ɡreɪd/",type:"اسم",example:"I got a high grade."},
+{english:"Topic", arabic:"موضوع",pronunciation:"/ˈtɒpɪk/",type:"اسم",example:"What’s the topic?"},
+{english:"Discussion", arabic:"نقاش",pronunciation:"/dɪˈskʌʃən/",type:"اسم",example:"We had a discussion."},
+{english:"Question", arabic:"سؤال",pronunciation:"/ˈkwestʃən/",type:"اسم",example:"I asked a question."},
+{english:"Answer", arabic:"إجابة",pronunciation:"/ˈænsər/",type:"اسم",example:"That’s the right answer."},
+{english:"Degree", arabic:"شهادة جامعية",pronunciation:"/dɪˈɡriː/",type:"اسم",example:"I got my degree."}
+]
+,5: [{english:"Company", arabic:"شركة",pronunciation:"/ˈkʌmpəni/",type:"اسم",example:"I work for a company."},
+{english:"Business", arabic:"عمل تجاري",pronunciation:"/ˈbɪznəs/",type:"اسم",example:"She owns a business."},
+{english:"Market", arabic:"سوق",pronunciation:"/ˈmɑːrkɪt/",type:"اسم",example:"The market is growing."},
+{english:"Customer", arabic:"زبون",pronunciation:"/ˈkʌstəmər/",type:"اسم",example:"The customer is waiting."},
+{english:"Client", arabic:"عميل",pronunciation:"/ˈklaɪənt/",type:"اسم",example:"He’s an old client."},
+{english:"Profit", arabic:"ربح",pronunciation:"/ˈprɒfɪt/",type:"اسم",example:"The profit increased."},
+{english:"Loss", arabic:"خسارة",pronunciation:"/lɒs/",type:"اسم",example:"We had a loss."},
+{english:"Budget", arabic:"ميزانية",pronunciation:"/ˈbʌdʒɪt/",type:"اسم",example:"The budget is small."},
+{english:"Investment", arabic:"استثمار",pronunciation:"/ɪnˈvestmənt/",type:"اسم",example:"This is a safe investment."},
+{english:"Contract", arabic:"عقد",pronunciation:"/ˈkɒntrækt/",type:"اسم",example:"Sign the contract."},
+{english:"Meeting", arabic:"اجتماع",pronunciation:"/ˈmiːtɪŋ/",type:"اسم",example:"We had a meeting."},
+{english:"Sale", arabic:"بيع",pronunciation:"/seɪl/",type:"اسم",example:"The sale is over."},
+{english:"Product", arabic:"منتج",pronunciation:"/ˈprɒdʌkt/",type:"اسم",example:"This product is new."},
+{english:"Service", arabic:"خدمة",pronunciation:"/ˈsɜːvɪs/",type:"اسم",example:"Good service matters."},
+{english:"Manager", arabic:"مدير",pronunciation:"/ˈmænɪdʒər/",type:"اسم",example:"The manager is strict."},
+{english:"Employee", arabic:"موظف",pronunciation:"/ɪmˈplɔɪiː/",type:"اسم",example:"The employee is late."},
+{english:"Department", arabic:"قسم",pronunciation:"/dɪˈpɑːtmənt/",type:"اسم",example:"The sales department."},
+{english:"Meeting", arabic:"اجتماع",pronunciation:"/ˈmiːtɪŋ/",type:"اسم",example:"Attend the meeting."},
+{english:"Project", arabic:"مشروع",pronunciation:"/ˈprɒdʒekt/",type:"اسم",example:"Start the project."},
+{english:"Team", arabic:"فريق",pronunciation:"/tiːm/",type:"اسم",example:"Our team is strong."},
+{english:"Report", arabic:"تقرير",pronunciation:"/rɪˈpɔːt/",type:"اسم",example:"Write a report."},
+{english:"Budget", arabic:"ميزانية",pronunciation:"/ˈbʌdʒɪt/",type:"اسم",example:"Set the budget."},
+{english:"Plan", arabic:"خطة",pronunciation:"/plæn/",type:"اسم",example:"Make a plan."},
+{english:"Result", arabic:"نتيجة",pronunciation:"/rɪˈzʌlt/",type:"اسم",example:"Show the result."},
+{english:"Goal", arabic:"هدف",pronunciation:"/ɡoʊl/",type:"اسم",example:"Reach your goal."}
+
+]
+,6: [{english:"Innovation", arabic:"ابتكار",pronunciation:"/ˌɪnəˈveɪʃən/",type:"اسم",example:"Innovation drives progress."},
+{english:"Strategy", arabic:"استراتيجية",pronunciation:"/ˈstrætədʒi/",type:"اسم",example:"We need a new strategy."},
+{english:"Leadership", arabic:"قيادة",pronunciation:"/ˈliːdəʃɪp/",type:"اسم",example:"Leadership is key."},
+{english:"Motivation", arabic:"تحفيز",pronunciation:"/ˌmoʊtɪˈveɪʃən/",type:"اسم",example:"Motivation matters."},
+{english:"Decision", arabic:"قرار",pronunciation:"/dɪˈsɪʒən/",type:"اسم",example:"Make a decision."},
+{english:"Performance", arabic:"أداء",pronunciation:"/pərˈfɔːrməns/",type:"اسم",example:"The performance improved."},
+{english:"Challenge", arabic:"تحدي",pronunciation:"/ˈtʃælɪndʒ/",type:"اسم",example:"This is a big challenge."},
+{english:"Opportunity", arabic:"فرصة",pronunciation:"/ˌɒpərˈtjuːnɪti/",type:"اسم",example:"Take the opportunity."},
+{english:"Development", arabic:"تطوير",pronunciation:"/dɪˈveləpmənt/",type:"اسم",example:"Software development."},
+{english:"Communication", arabic:"اتصال",pronunciation:"/kəˌmjuːnɪˈkeɪʃən/",type:"اسم",example:"Good communication helps."},
+{english:"Negotiation", arabic:"تفاوض",pronunciation:"/nɪˌɡoʊʃiˈeɪʃən/",type:"اسم",example:"Negotiation is important."},
+{english:"Productivity", arabic:"إنتاجية",pronunciation:"/ˌproʊdʌkˈtɪvɪti/",type:"اسم",example:"Increase productivity."},
+{english:"Responsibility", arabic:"مسؤولية",pronunciation:"/rɪˌspɒnsəˈbɪləti/",type:"اسم",example:"Take responsibility."},
+{english:"Confidence", arabic:"ثقة",pronunciation:"/ˈkɒnfɪdəns/",type:"اسم",example:"Have confidence."},
+{english:"Ambition", arabic:"طموح",pronunciation:"/æmˈbɪʃən/",type:"اسم",example:"He has great ambition."},
+{english:"Decision", arabic:"قرار",pronunciation:"/dɪˈsɪʒən/",type:"اسم",example:"Your decision matters."},
+{english:"Experience", arabic:"خبرة",pronunciation:"/ɪkˈspɪəriəns/",type:"اسم",example:"He has experience."},
+{english:"Vision", arabic:"رؤية",pronunciation:"/ˈvɪʒən/",type:"اسم",example:"The company’s vision."},
+{english:"Mission", arabic:"مهمة",pronunciation:"/ˈmɪʃən/",type:"اسم",example:"Our mission is clear."},
+{english:"Quality", arabic:"جودة",pronunciation:"/ˈkwɒləti/",type:"اسم",example:"We offer quality."},
+{english:"Success", arabic:"نجاح",pronunciation:"/səkˈses/",type:"اسم",example:"Success takes time."},
+{english:"Teamwork", arabic:"العمل الجماعي",pronunciation:"/ˈtiːmwɜːk/",type:"اسم",example:"Teamwork is vital."},
+{english:"Goal", arabic:"هدف",pronunciation:"/ɡoʊl/",type:"اسم",example:"Set a goal."},
+{english:"Future", arabic:"مستقبل",pronunciation:"/ˈfjuːtʃər/",type:"اسم",example:"Think about the future."},
+{english:"Achievement", arabic:"إنجاز",pronunciation:"/əˈtʃiːvmənt/",type:"اسم",example:"This is a great achievement."}
+]
+
+};
+
+let currentLevel = 1;
+
+function showHome(){ document.getElementById('homePage').style.display='block'; document.getElementById('levelPages').style.display='none'; }
+
+function showLevel(level){
+  currentLevel=level;
+  document.getElementById('homePage').style.display='none';
+  document.getElementById('levelPages').style.display='block';
+  document.getElementById('levelIndicator').innerText=`المستوى ${level}`;
+  displayWords();
+  updateNavigationButtons();
+}
+
+function displayWords(filtered=null){
+  const c=document.getElementById('wordsContainer');
+  c.innerHTML='';
+  const words=filtered||dictionary[currentLevel];
+  words.forEach((w,i)=>{
+    c.innerHTML+=`
+    <div class='word-card'>
+      <div class='word-number'>${i+1}</div>
+      <div class='word-english'>${w.english}</div>
+      <div class='word-arabic'>${w.arabic}</div>
+      <div class='word-pronunciation'>${w.pronunciation}</div>
+      <div class='word-type'>${w.type}</div>
+      <div class='word-example'>${w.example}</div>
+    </div>`;
+  });
+}
+
+function nextLevel(){ if(currentLevel<6) showLevel(currentLevel+1); }
+function previousLevel(){ if(currentLevel>1) showLevel(currentLevel-1); }
+
+function updateNavigationButtons(){
+  document.getElementById('prevBtn').style.display=currentLevel===1?'none':'inline-block';
+  document.getElementById('nextBtn').style.display=currentLevel===6?'none':'inline-block';
+}
+
+function searchWords(){
+  const q=document.getElementById('searchInput').value.toLowerCase();
+  const f=dictionary[currentLevel].filter(w=>w.english.toLowerCase().includes(q)||w.arabic.includes(q));
+  displayWords(f);
+}
+
+function clearSearch(){ document.getElementById('searchInput').value=''; displayWords(); }
+
+showHome();
+</script>
+</body>
+</html>
